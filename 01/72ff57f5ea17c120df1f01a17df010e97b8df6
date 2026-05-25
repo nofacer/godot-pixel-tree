@@ -1,0 +1,21 @@
+example/example_forest.tscn
+  s_ea51af214f0688::t_baddf53af53459 7-10,12-16,19,36,40,42,44,46,50-51,54-56,58-60,62-64,66-68,70,72-74,78-84,88,95,103,111,119,125-127,129-131,134-135
+  s_ea51af214f0688::t_a45978f0b2a669 86,89,97,105,113,121
+  s_ea51af214f0688::t_ba24e944f110a6 21-24,26-30,32,35,38-39,43,47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "0172ff57f5ea17c120df1f01a17df010e97b8df6",
+  "prompts": {},
+  "sessions": {
+    "s_ea51af214f0688": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019e5ca8-327e-7602-bf05-7f02bca0ae3f",
+        "model": "gpt-5.4"
+      },
+      "human_author": "PosiNorth <nofacer@outlook.com>"
+    }
+  }
+}
