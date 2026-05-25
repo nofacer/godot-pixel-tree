@@ -1,0 +1,14 @@
+addons/pixel_tree/plugin.cfg
+  h_bafa96d59b1234 6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "5e70d039ab3d9870d7c851457f6733c7c6431143",
+  "prompts": {},
+  "humans": {
+    "h_bafa96d59b1234": {
+      "author": "PosiNorth <nofacer@outlook.com>"
+    }
+  }
+}
