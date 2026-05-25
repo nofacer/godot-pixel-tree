@@ -76,6 +76,7 @@ var _draw_offset := Vector2.ZERO
 var _particles: Array[Dictionary] = []
 var _rng := RandomNumberGenerator.new()
 var _working_origin := Vector2.ZERO
+var _root_position := Vector2.ZERO
 var _used_min := Vector2i.ZERO
 var _used_max := Vector2i.ZERO
 var _has_used_pixels := false
@@ -111,7 +112,8 @@ func regenerate() -> void:
 
 	var planters: Array[Dictionary] = []
 	var root_angle := _randf_range(-PI * 0.5 - _trunk_angle_spread, -PI * 0.5 + _trunk_angle_spread)
-	planters.append(_make_planter(_working_origin + Vector2(_canvas_size.x * 0.5, _canvas_size.y - 1), root_angle, preset))
+	_root_position = _working_origin + Vector2(_canvas_size.x * 0.5, _canvas_size.y - 1)
+	planters.append(_make_planter(_root_position, root_angle, preset))
 
 	var step_count := 0
 	while not planters.is_empty() and step_count < GENERATION_STEP_LIMIT:
@@ -312,7 +314,7 @@ func _finalize_image() -> void:
 	var crop_origin := _used_min
 	var crop_size := (_used_max - _used_min) + Vector2i.ONE
 	_image = _image.get_region(Rect2i(crop_origin, crop_size))
-	_draw_offset = Vector2(crop_origin) - _working_origin
+	_draw_offset = Vector2(crop_origin) - _root_position
 
 
 func _get_preset_data(preset: TreePreset) -> Dictionary:
