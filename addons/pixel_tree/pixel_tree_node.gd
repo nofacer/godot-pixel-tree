@@ -13,24 +13,41 @@ enum TreePreset {
 const GROW_STEP_SIZE := 0.007
 const DEFAULT_RANDOM_SEED := 1337
 const GENERATION_STEP_LIMIT := 16384
+const WORKING_SIDE_ROOM := 384
+const WORKING_UPWARD_ROOM := 448
+const WORKING_DOWNWARD_ROOM := 160
 
-var _canvas_size: Vector2i = Vector2i(128, 128)
 var _tree_preset: TreePreset = TreePreset.OAK
 var _preview_scale := 4.0
 var _seed := DEFAULT_RANDOM_SEED
 var _trunk_angle_spread := 0.3
 var _generate_now := false
-
-@export var canvas_size: Vector2i = Vector2i(128, 128) :
-	set(value):
-		_canvas_size = Vector2i(maxi(value.x, 16), maxi(value.y, 16))
-		_queue_regenerate()
-	get:
-		return _canvas_size
+var _lifetime := 0.7
+var _min_split_time := 0.3
+var _max_split_time := 0.4
+var _thickness := 4
+var _initial_gravity := 0.3
+var _warping := 5.0
+var _leaf_generation := 4
+var _gravity_per_generation := 0.35
+var _branch_angle_spread := 1.3
+var _leaf_amount := 4
+var _leaf_length := 0.3
+var _leaf_gravity := 0.0
+var _leaf_thickness := 4
+var _end_split_max := 5
+var _mid_split_max := 4
+var _skip_generation_max := 0
+var _leaf_steps := 2
+var _base_color := Color8(55, 45, 35)
+var _leaf_color := Color8(60, 110, 40)
+var _base_color_variation := 7.0
+var _leaf_color_variation := 20.0
 
 @export var tree_preset: TreePreset = TreePreset.OAK :
 	set(value):
 		_tree_preset = value
+		_apply_preset_data(_get_preset_data(value))
 		_queue_regenerate()
 	get:
 		return _tree_preset
@@ -44,7 +61,6 @@ var _generate_now := false
 
 @export var auto_regenerate := true
 @export var randomize_on_each_regenerate := false
-@export var bake_falling_particles := false
 @export var seed := DEFAULT_RANDOM_SEED :
 	set(value):
 		_seed = value
@@ -52,6 +68,159 @@ var _generate_now := false
 			_queue_regenerate()
 	get:
 		return _seed
+
+@export_group("Growth")
+@export_range(0.05, 3.0, 0.01) var lifetime := 0.7 :
+	set(value):
+		_lifetime = maxf(value, 0.05)
+		_queue_regenerate()
+	get:
+		return _lifetime
+
+@export_range(0.0, 4.0, 0.01) var min_split_time := 0.3 :
+	set(value):
+		_min_split_time = maxf(value, 0.0)
+		if _max_split_time < _min_split_time:
+			_max_split_time = _min_split_time
+		_queue_regenerate()
+	get:
+		return _min_split_time
+
+@export_range(0.0, 4.0, 0.01) var max_split_time := 0.4 :
+	set(value):
+		_max_split_time = maxf(value, _min_split_time)
+		_queue_regenerate()
+	get:
+		return _max_split_time
+
+@export_range(1, 12, 1) var thickness := 4 :
+	set(value):
+		_thickness = maxi(value, 1)
+		_queue_regenerate()
+	get:
+		return _thickness
+
+@export_range(-40.0, 40.0, 0.1) var initial_gravity := 0.3 :
+	set(value):
+		_initial_gravity = value
+		_queue_regenerate()
+	get:
+		return _initial_gravity
+
+@export_range(0.0, 60.0, 0.1) var warping := 5.0 :
+	set(value):
+		_warping = maxf(value, 0.0)
+		_queue_regenerate()
+	get:
+		return _warping
+
+@export_range(1, 24, 1) var leaf_generation := 4 :
+	set(value):
+		_leaf_generation = maxi(value, 1)
+		_queue_regenerate()
+	get:
+		return _leaf_generation
+
+@export_range(-4.0, 4.0, 0.01) var gravity_per_generation := 0.35 :
+	set(value):
+		_gravity_per_generation = value
+		_queue_regenerate()
+	get:
+		return _gravity_per_generation
+
+@export_range(0.0, 3.5, 0.01) var branch_angle_spread := 1.3 :
+	set(value):
+		_branch_angle_spread = maxf(value, 0.0)
+		_queue_regenerate()
+	get:
+		return _branch_angle_spread
+
+@export_group("Leaves")
+@export_range(0, 16, 1) var leaf_amount := 4 :
+	set(value):
+		_leaf_amount = maxi(value, 0)
+		_queue_regenerate()
+	get:
+		return _leaf_amount
+
+@export_range(0.05, 4.0, 0.01) var leaf_length := 0.3 :
+	set(value):
+		_leaf_length = maxf(value, 0.05)
+		_queue_regenerate()
+	get:
+		return _leaf_length
+
+@export_range(-40.0, 40.0, 0.1) var leaf_gravity := 0.0 :
+	set(value):
+		_leaf_gravity = value
+		_queue_regenerate()
+	get:
+		return _leaf_gravity
+
+@export_range(1, 12, 1) var leaf_thickness := 4 :
+	set(value):
+		_leaf_thickness = maxi(value, 1)
+		_queue_regenerate()
+	get:
+		return _leaf_thickness
+
+@export_range(0, 8, 1) var leaf_steps := 2 :
+	set(value):
+		_leaf_steps = maxi(value, 0)
+		_queue_regenerate()
+	get:
+		return _leaf_steps
+
+@export_group("Branching")
+@export_range(0, 8, 1) var end_split_max := 5 :
+	set(value):
+		_end_split_max = maxi(value, 0)
+		_queue_regenerate()
+	get:
+		return _end_split_max
+
+@export_range(0, 8, 1) var mid_split_max := 4 :
+	set(value):
+		_mid_split_max = maxi(value, 0)
+		_queue_regenerate()
+	get:
+		return _mid_split_max
+
+@export_range(0, 4, 1) var skip_generation_max := 0 :
+	set(value):
+		_skip_generation_max = maxi(value, 0)
+		_queue_regenerate()
+	get:
+		return _skip_generation_max
+
+@export_group("Colors")
+@export var base_color := Color8(55, 45, 35) :
+	set(value):
+		_base_color = value
+		_queue_regenerate()
+	get:
+		return _base_color
+
+@export_range(0.0, 64.0, 1.0) var base_color_variation := 7.0 :
+	set(value):
+		_base_color_variation = maxf(value, 0.0)
+		_queue_regenerate()
+	get:
+		return _base_color_variation
+
+@export var leaf_color := Color8(60, 110, 40) :
+	set(value):
+		_leaf_color = value
+		_queue_regenerate()
+	get:
+		return _leaf_color
+
+@export_range(0.0, 64.0, 1.0) var leaf_color_variation := 20.0 :
+	set(value):
+		_leaf_color_variation = maxf(value, 0.0)
+		_queue_regenerate()
+	get:
+		return _leaf_color_variation
 
 @export_range(0.0, 1.0, 0.01) var trunk_angle_spread := 0.3 :
 	set(value):
@@ -73,13 +242,15 @@ var _generate_now := false
 var _image: Image
 var _texture: ImageTexture
 var _draw_offset := Vector2.ZERO
-var _particles: Array[Dictionary] = []
 var _rng := RandomNumberGenerator.new()
-var _working_origin := Vector2.ZERO
 var _root_position := Vector2.ZERO
 var _used_min := Vector2i.ZERO
 var _used_max := Vector2i.ZERO
 var _has_used_pixels := false
+
+
+func _init() -> void:
+	_apply_preset_data(_get_preset_data(_tree_preset))
 
 
 func _ready() -> void:
@@ -98,33 +269,27 @@ func regenerate() -> void:
 	else:
 		_rng.seed = _seed
 
-	var preset := _get_preset_data(_tree_preset)
-	var working_padding := _get_working_padding()
-	var working_size := _canvas_size + Vector2i.ONE * working_padding * 2
-	_working_origin = Vector2(working_padding, working_padding)
+	var working_size := _get_working_size()
 	_image = Image.create(working_size.x, working_size.y, false, Image.FORMAT_RGBA8)
 	_image.fill(Color(0, 0, 0, 0))
 	_draw_offset = Vector2.ZERO
-	_particles.clear()
 	_has_used_pixels = false
 	_used_min = Vector2i(working_size.x, working_size.y)
 	_used_max = Vector2i.ZERO
 
 	var planters: Array[Dictionary] = []
 	var root_angle := _randf_range(-PI * 0.5 - _trunk_angle_spread, -PI * 0.5 + _trunk_angle_spread)
-	_root_position = _working_origin + Vector2(_canvas_size.x * 0.5, _canvas_size.y - 1)
-	planters.append(_make_planter(_root_position, root_angle, preset))
+	_root_position = _get_root_position(working_size)
+	planters.append(_make_planter(_root_position, root_angle))
 
 	var step_count := 0
 	while not planters.is_empty() and step_count < GENERATION_STEP_LIMIT:
 		step_count += 1
 		var next_generation: Array[Dictionary] = []
 		for planter in planters:
-			_update_planter(planter, preset, next_generation)
+			_update_planter(planter, next_generation)
 		planters = next_generation
 
-	if bake_falling_particles:
-		_simulate_particles()
 	_finalize_image()
 	_texture = ImageTexture.create_from_image(_image)
 	queue_redraw()
@@ -144,8 +309,6 @@ func _draw() -> void:
 		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE * _preview_scale)
 		draw_texture(_texture, _draw_offset)
 		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-	elif Engine.is_editor_hint():
-		draw_rect(Rect2(Vector2.ZERO, Vector2(_canvas_size) * _preview_scale), Color(0.12, 0.12, 0.12, 0.4), true)
 
 
 func _queue_regenerate() -> void:
@@ -153,26 +316,24 @@ func _queue_regenerate() -> void:
 		call_deferred("regenerate")
 
 
-func _make_planter(start_pos: Vector2, angle: float, preset: Dictionary) -> Dictionary:
-	var lifetime: float = preset["lt"] * _randf_range(0.5, 1.5)
-	var min_split: float = preset["mn_sp_t"]
-	var max_split := preset.get("mx_sp_t", min_split + 0.1)
+func _make_planter(start_pos: Vector2, angle: float) -> Dictionary:
+	var lifetime_value: float = _lifetime * _randf_range(0.5, 1.5)
 	return {
 		"position": start_pos,
 		"angle": angle,
 		"age": 0.0,
 		"gen": 1,
-		"lt": lifetime,
-		"split_time": lifetime * _randf_range(min_split, max_split),
-		"thk": preset["thk"],
-		"gt": preset["gt_initial"],
-		"color": _randomize_color(preset["color_base"], 7.0),
+		"lt": lifetime_value,
+		"split_time": lifetime_value * _randf_range(_min_split_time, _max_split_time),
+		"thk": _thickness,
+		"gt": _initial_gravity,
+		"color": _randomize_color(_base_color, _base_color_variation),
 	}
 
 
-func _update_planter(planter: Dictionary, preset: Dictionary, next_generation: Array[Dictionary]) -> void:
+func _update_planter(planter: Dictionary, next_generation: Array[Dictionary]) -> void:
 	var angle: float = planter["angle"]
-	angle += _randf_range(-preset["warping"], preset["warping"]) * GROW_STEP_SIZE
+	angle += _randf_range(-_warping, _warping) * GROW_STEP_SIZE
 	angle = _rotate_angle(angle, -PI * 0.5, planter["gt"] * GROW_STEP_SIZE)
 
 	var position: Vector2 = planter["position"]
@@ -186,31 +347,27 @@ func _update_planter(planter: Dictionary, preset: Dictionary, next_generation: A
 	planter["age"] = planter["age"] + GROW_STEP_SIZE
 
 	if planter["age"] > planter["split_time"]:
-		_split_planter(planter, preset, next_generation, 0, int(preset["s_mid_mx"]))
-		var min_split: float = preset["mn_sp_t"]
-		var max_split := preset.get("mx_sp_t", min_split * 2.0)
-		planter["split_time"] = planter["split_time"] + _randf_range(min_split, max_split)
+		_split_planter(planter, next_generation, 0, _mid_split_max)
+		planter["split_time"] = planter["split_time"] + _randf_range(_min_split_time, _max_split_time)
 
 	if planter["age"] > planter["lt"]:
-		_split_planter(planter, preset, next_generation, 1, int(preset["s_end_mx"]))
+		_split_planter(planter, next_generation, 1, _end_split_max)
 		_draw_pixel(position, planter["color"])
-		if planter["gen"] > preset["lf_gen"] and _randf() > 0.8:
-			_particles.append(_make_particle(position, angle, planter["color"]))
 	else:
 		next_generation.append(planter)
 
 
-func _split_planter(planter: Dictionary, preset: Dictionary, next_generation: Array[Dictionary], min_count: int, max_count: int) -> void:
+func _split_planter(planter: Dictionary, next_generation: Array[Dictionary], min_count: int, max_count: int) -> void:
 	var branch_count := _randi_range(min_count, max_count)
-	var angle_delta: float = preset["ang_dif"]
+	var angle_delta: float = _branch_angle_spread
 
-	if planter["gen"] >= preset["lf_gen"] + preset.get("lf_steps", 0):
+	if planter["gen"] >= _leaf_generation + _leaf_steps:
 		branch_count = 0
 	if branch_count == 1:
 		angle_delta = 0.1
-	if planter["gen"] == preset["lf_gen"]:
+	if planter["gen"] == _leaf_generation:
 		angle_delta = 3.0
-		branch_count = int(preset["lf_amount"])
+		branch_count = _leaf_amount
 
 	for _i in range(branch_count):
 		var child_angle := _rotate_angle(
@@ -218,59 +375,18 @@ func _split_planter(planter: Dictionary, preset: Dictionary, next_generation: Ar
 			-PI * 0.5,
 			0.3
 		)
-		var child := _make_planter(planter["position"], child_angle, preset)
-		var generation_step := _randi_range(1, 1 + int(preset.get("skip_gen_max", 1)))
+		var child := _make_planter(planter["position"], child_angle)
+		var generation_step := _randi_range(1, 1 + _skip_generation_max)
 		child["thk"] = maxi(1, int(planter["thk"]) - 1)
 		child["gen"] = planter["gen"] + generation_step
 		child["lt"] = float(child["lt"]) / child["gen"]
-		child["gt"] = planter["gt"] - generation_step * preset["gt_per_gen"]
-		if planter["gen"] >= preset["lf_gen"]:
-			child["color"] = _randomize_color(preset["color_leaves"], 20.0)
-			child["lt"] = child["lt"] * preset["lf_length"]
-			child["thk"] = maxi(1, int(preset["lf_thickness"]) - (child["gen"] - preset["lf_gen"]))
-			child["gt"] = preset["lf_gravity"]
+		child["gt"] = planter["gt"] - generation_step * _gravity_per_generation
+		if planter["gen"] >= _leaf_generation:
+			child["color"] = _randomize_color(_leaf_color, _leaf_color_variation)
+			child["lt"] = child["lt"] * _leaf_length
+			child["thk"] = maxi(1, _leaf_thickness - (child["gen"] - _leaf_generation))
+			child["gt"] = _leaf_gravity
 		next_generation.append(child)
-
-
-func _make_particle(position: Vector2, angle: float, color: Color) -> Dictionary:
-	return {
-		"position": position,
-		"velocity": Vector2(cos(angle), sin(angle)) * 85.0,
-		"age": 0.0,
-		"drag": 2.0,
-		"lifetime": 20.0,
-		"gravity": 50.0,
-		"color": color,
-	}
-
-
-func _simulate_particles() -> void:
-	var delta_time := 0.016
-	for _step in range(300):
-		if _particles.is_empty():
-			return
-		var survivors: Array[Dictionary] = []
-		for particle in _particles:
-			var velocity: Vector2 = particle["velocity"]
-			velocity *= (1.0 - particle["drag"] * delta_time)
-			if particle["position"].y >= _canvas_size.y - 1:
-				velocity.y = 0.0
-			else:
-				velocity.x += _randf_range(-100.0, 100.0) * delta_time
-				if particle["position"].y < _canvas_size.y - 20:
-					velocity.y += _randf_range(-100.0, 100.0) * delta_time
-				velocity.y += particle["gravity"] * delta_time
-				velocity.y -= absf(velocity.x) / 150.0
-			var position: Vector2 = particle["position"] + velocity * delta_time
-			position.x = clampf(position.x, 0.0, _canvas_size.x - 1.0)
-			position.y = clampf(position.y, 0.0, _canvas_size.y - 1.0)
-			_draw_pixel(position, particle["color"])
-			particle["position"] = position
-			particle["velocity"] = velocity
-			particle["age"] = particle["age"] + delta_time
-			if particle["age"] <= particle["lifetime"]:
-				survivors.append(particle)
-		_particles = survivors
 
 
 func _draw_block(position: Vector2, size: int, color: Color) -> void:
@@ -300,13 +416,39 @@ func _set_pixel(pixel: Vector2i, color: Color) -> void:
 	_image.set_pixel(pixel.x, pixel.y, color)
 
 
-func _get_working_padding() -> int:
-	return maxi(maxi(_canvas_size.x, _canvas_size.y), 64) * 2
+func _get_working_size() -> Vector2i:
+	return Vector2i(WORKING_SIDE_ROOM * 2 + 1, WORKING_UPWARD_ROOM + WORKING_DOWNWARD_ROOM + 1)
+
+
+func _get_root_position(working_size: Vector2i) -> Vector2:
+	return Vector2(working_size.x * 0.5, WORKING_UPWARD_ROOM)
+
+
+func _apply_preset_data(preset: Dictionary) -> void:
+	_lifetime = preset["lt"]
+	_min_split_time = preset["mn_sp_t"]
+	_max_split_time = float(preset.get("mx_sp_t", _min_split_time + 0.1))
+	_thickness = int(preset["thk"])
+	_initial_gravity = preset["gt_initial"]
+	_warping = preset["warping"]
+	_leaf_generation = int(preset["lf_gen"])
+	_gravity_per_generation = preset["gt_per_gen"]
+	_branch_angle_spread = preset["ang_dif"]
+	_leaf_amount = int(preset["lf_amount"])
+	_leaf_length = preset["lf_length"]
+	_leaf_gravity = preset["lf_gravity"]
+	_leaf_thickness = int(preset["lf_thickness"])
+	_end_split_max = int(preset["s_end_mx"])
+	_mid_split_max = int(preset["s_mid_mx"])
+	_skip_generation_max = int(preset.get("skip_gen_max", 1))
+	_leaf_steps = int(preset.get("lf_steps", 0))
+	_base_color = preset["color_base"]
+	_leaf_color = preset["color_leaves"]
 
 
 func _finalize_image() -> void:
 	if not _has_used_pixels:
-		_image = Image.create(_canvas_size.x, _canvas_size.y, false, Image.FORMAT_RGBA8)
+		_image = Image.create(1, 1, false, Image.FORMAT_RGBA8)
 		_image.fill(Color(0, 0, 0, 0))
 		_draw_offset = Vector2.ZERO
 		return

@@ -89,41 +89,96 @@ label_settings = SubResource("LabelSettings_hc2d8")
 [node name="OakTree" type="Node2D" parent="." unique_id=601679786]
 position = Vector2(208, 404)
 script = ExtResource("1_sflvu")
-canvas_size = Vector2i(128, 160)
 preview_scale = 1.55
 seed = 42
 
 [node name="SakuraTree" type="Node2D" parent="." unique_id=1459885786]
 position = Vector2(390, 408)
 script = ExtResource("1_sflvu")
-canvas_size = Vector2i(120, 152)
 tree_preset = 1
 preview_scale = 1.55
 seed = 77
+lifetime = 0.5
+min_split_time = 0.8
+max_split_time = 0.9
+thickness = 6
+initial_gravity = 3.0
+warping = 40.0
+leaf_generation = 12
+gravity_per_generation = 1.0
+branch_angle_spread = 1.0
+leaf_amount = 5
+leaf_length = 0.8
+leaf_steps = 1
+end_split_max = 2
+mid_split_max = 2
+skip_generation_max = 1
+base_color = Color(0.19607843, 0.11764706, 0.11764706, 1)
+leaf_color = Color(0.8627451, 0.54901963, 0.5882353, 1)
 
 [node name="PalmTree" type="Node2D" parent="." unique_id=832182892]
 position = Vector2(624, 412)
 script = ExtResource("1_sflvu")
-canvas_size = Vector2i(112, 144)
 tree_preset = 2
 preview_scale = 1.65
 seed = 9
+lifetime = 1.1
+min_split_time = 2.0
+max_split_time = 2.1
+thickness = 3
+initial_gravity = -0.5
+warping = 3.0
+leaf_generation = 1
+gravity_per_generation = 0.5
+branch_angle_spread = 0.0
+leaf_amount = 10
+leaf_gravity = -7.0
+leaf_steps = 3
+end_split_max = 1
+mid_split_max = 1
+base_color = Color(0.23529412, 0.11764706, 0.09803922, 1)
+leaf_color = Color(0.3137255, 0.50980395, 0.11764706, 1)
 
 [node name="WinterTree" type="Node2D" parent="." unique_id=1960566840]
 position = Vector2(856, 390)
 script = ExtResource("1_sflvu")
-canvas_size = Vector2i(132, 176)
 tree_preset = 3
 preview_scale = 1.45
 seed = 1234
+warping = 20.0
+leaf_generation = 5
+gravity_per_generation = 0.1
+branch_angle_spread = 1.4
+leaf_amount = 1
+leaf_length = 0.5
+end_split_max = 4
+mid_split_max = 3
+skip_generation_max = 1
+base_color = Color(0.3137255, 0.43137255, 0.49019608, 1)
+leaf_color = Color(0.7254902, 0.74509805, 0.78431374, 1)
 
 [node name="BirchTree" type="Node2D" parent="." unique_id=1928783038]
 position = Vector2(988, 418)
 script = ExtResource("1_sflvu")
-canvas_size = Vector2i(120, 200)
 tree_preset = 4
 preview_scale = 1.15
 seed = 31415
+min_split_time = 0.6
+max_split_time = 0.7
+thickness = 3
+initial_gravity = 0.5
+warping = 3.0
+leaf_generation = 6
+branch_angle_spread = 0.9
+leaf_amount = 3
+leaf_length = 2.0
+leaf_gravity = -30.0
+leaf_thickness = 2
+leaf_steps = 0
+end_split_max = 4
+mid_split_max = 6
+base_color = Color(0.7058824, 0.6666667, 0.627451, 1)
+leaf_color = Color(0.3529412, 0.47058824, 0.15686275, 1)
 
 [node name="ForegroundSilhouetteLeft" type="Polygon2D" parent="." unique_id=1940210192]
 color = Color(0.0784314, 0.105882, 0.0862745, 0.72)
