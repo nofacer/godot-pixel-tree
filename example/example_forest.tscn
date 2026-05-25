@@ -1,72 +1,136 @@
-[gd_scene load_steps=5 format=4 uid="uid://c6hx1n0y4i2lq"]
+[gd_scene format=3 uid="uid://c6hx1n0y4i2lq"]
 
-[ext_resource type="Script" path="res://addons/pixel_tree/pixel_tree_node.gd" id="1_sflvu"]
-[ext_resource type="Texture2D" path="res://icon.svg" id="2_t0oai"]
+[ext_resource type="Script" uid="uid://ccbw7avxeiudb" path="res://addons/pixel_tree/pixel_tree_node.gd" id="1_sflvu"]
+[ext_resource type="Texture2D" uid="uid://lkfnbgpfx7r5" path="res://icon.svg" id="2_t0oai"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_5lxk1"]
-font_size = 24
-font_color = Color(0.968627, 0.937255, 0.85098, 1)
+font_size = 30
+font_color = Color(0.976471, 0.945098, 0.854902, 1)
+shadow_size = 4
+shadow_color = Color(0.0745098, 0.101961, 0.101961, 0.45)
 
-[node name="ExampleForest" type="Node2D"]
+[sub_resource type="LabelSettings" id="LabelSettings_hc2d8"]
+font_size = 14
+font_color = Color(0.807843, 0.858824, 0.776471, 0.9)
+shadow_size = 3
+shadow_color = Color(0.0705882, 0.0901961, 0.0901961, 0.4)
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="ExampleForest" type="Node2D" unique_id=1919711147]
+
+[node name="SkyTop" type="ColorRect" parent="." unique_id=1218789891]
+offset_right = 1280.0
+offset_bottom = 232.0
+color = Color(0.054902, 0.0823529, 0.133333, 1)
+
+[node name="SkyMid" type="ColorRect" parent="." unique_id=2002003549]
+offset_top = 232.0
+offset_right = 1280.0
+offset_bottom = 446.0
+color = Color(0.160784, 0.231373, 0.239216, 1)
+
+[node name="SkyGlow" type="ColorRect" parent="." unique_id=1199649320]
+offset_top = 446.0
 offset_right = 1280.0
 offset_bottom = 720.0
-color = Color(0.156863, 0.192157, 0.0980392, 1)
+color = Color(0.533333, 0.419608, 0.262745, 1)
 
-[node name="Ground" type="Polygon2D" parent="."]
-color = Color(0.309804, 0.270588, 0.188235, 1)
-polygon = PackedVector2Array(0, 590, 1280, 530, 1280, 720, 0, 720)
+[node name="MoonGlow" type="Polygon2D" parent="." unique_id=1772312705]
+color = Color(0.94902, 0.878431, 0.686275, 0.08)
+polygon = PackedVector2Array(1008, 36, 1094, 58, 1164, 126, 1186, 212, 1162, 292, 1098, 354, 1014, 374, 936, 354, 876, 294, 854, 214, 876, 126, 940, 60)
 
-[node name="Title" type="Label" parent="."]
-offset_left = 32.0
+[node name="Moon" type="Polygon2D" parent="." unique_id=1519487632]
+color = Color(0.980392, 0.929412, 0.733333, 0.95)
+polygon = PackedVector2Array(1038, 92, 1078, 102, 1106, 132, 1114, 172, 1102, 208, 1070, 236, 1028, 246, 990, 236, 962, 206, 954, 164, 968, 128, 998, 102)
+
+[node name="MoonShade" type="Polygon2D" parent="." unique_id=478042755]
+color = Color(0.160784, 0.223529, 0.239216, 0.85)
+polygon = PackedVector2Array(1062, 104, 1092, 116, 1110, 142, 1118, 176, 1108, 202, 1088, 222, 1060, 228, 1038, 220, 1022, 204, 1044, 184, 1060, 156, 1068, 124)
+
+[node name="FarRidge" type="Polygon2D" parent="." unique_id=889051197]
+color = Color(0.105882, 0.152941, 0.141176, 0.95)
+polygon = PackedVector2Array(0, 414, 82, 392, 178, 400, 276, 356, 382, 376, 506, 332, 620, 360, 760, 300, 882, 334, 1012, 286, 1140, 326, 1280, 278, 1280, 720, 0, 720)
+
+[node name="MidRidge" type="Polygon2D" parent="." unique_id=222442106]
+color = Color(0.133333, 0.184314, 0.141176, 1)
+polygon = PackedVector2Array(0, 520, 112, 494, 218, 520, 320, 462, 458, 486, 576, 446, 706, 480, 820, 430, 938, 450, 1088, 406, 1202, 438, 1280, 420, 1280, 720, 0, 720)
+
+[node name="MistBand" type="Polygon2D" parent="." unique_id=2129468348]
+color = Color(0.780392, 0.870588, 0.752941, 0.08)
+polygon = PackedVector2Array(0, 430, 156, 416, 312, 430, 476, 410, 660, 426, 838, 408, 1016, 428, 1172, 418, 1280, 424, 1280, 520, 0, 520)
+
+[node name="GroundBack" type="Polygon2D" parent="." unique_id=1291467896]
+color = Color(0.247059, 0.266667, 0.152941, 1)
+polygon = PackedVector2Array(0, 596, 138, 574, 310, 584, 500, 548, 722, 566, 920, 540, 1116, 566, 1280, 548, 1280, 720, 0, 720)
+
+[node name="GroundFront" type="Polygon2D" parent="." unique_id=120481867]
+color = Color(0.34902, 0.290196, 0.180392, 1)
+polygon = PackedVector2Array(0, 640, 182, 624, 356, 634, 524, 610, 748, 626, 948, 604, 1148, 620, 1280, 610, 1280, 720, 0, 720)
+
+[node name="Title" type="Label" parent="." unique_id=175230912]
+offset_left = 34.0
 offset_top = 24.0
-offset_right = 545.0
-offset_bottom = 63.0
-text = "PixelTree Addon Example"
+offset_right = 486.0
+offset_bottom = 67.0
+text = "PixelTree Forest Showcase"
 label_settings = SubResource("LabelSettings_5lxk1")
 
-[node name="OakTree" type="Node2D" parent="."]
-position = Vector2(190, 140)
+[node name="Subtitle" type="Label" parent="." unique_id=836315618]
+offset_left = 36.0
+offset_top = 68.0
+offset_right = 470.0
+offset_bottom = 95.0
+text = "Five presets staged in a layered dusk scene"
+label_settings = SubResource("LabelSettings_hc2d8")
+
+[node name="OakTree" type="Node2D" parent="." unique_id=601679786]
+position = Vector2(208, 404)
 script = ExtResource("1_sflvu")
-tree_preset = 0
+canvas_size = Vector2i(128, 160)
+preview_scale = 1.55
 seed = 42
-canvas_size = Vector2i(96, 128)
-preview_scale = 3.0
 
-[node name="SakuraTree" type="Node2D" parent="."]
-position = Vector2(420, 120)
+[node name="SakuraTree" type="Node2D" parent="." unique_id=1459885786]
+position = Vector2(390, 408)
 script = ExtResource("1_sflvu")
+canvas_size = Vector2i(120, 152)
 tree_preset = 1
+preview_scale = 1.55
 seed = 77
-canvas_size = Vector2i(96, 128)
-preview_scale = 3.0
 
-[node name="PalmTree" type="Node2D" parent="."]
-position = Vector2(660, 170)
+[node name="PalmTree" type="Node2D" parent="." unique_id=832182892]
+position = Vector2(624, 412)
 script = ExtResource("1_sflvu")
+canvas_size = Vector2i(112, 144)
 tree_preset = 2
+preview_scale = 1.65
 seed = 9
-canvas_size = Vector2i(96, 128)
-preview_scale = 3.0
 
-[node name="WinterTree" type="Node2D" parent="."]
-position = Vector2(900, 145)
+[node name="WinterTree" type="Node2D" parent="." unique_id=1960566840]
+position = Vector2(856, 390)
 script = ExtResource("1_sflvu")
+canvas_size = Vector2i(132, 176)
 tree_preset = 3
+preview_scale = 1.45
 seed = 1234
-canvas_size = Vector2i(96, 128)
-preview_scale = 3.0
 
-[node name="BirchTree" type="Node2D" parent="."]
-position = Vector2(1120, 155)
+[node name="BirchTree" type="Node2D" parent="." unique_id=1928783038]
+position = Vector2(988, 418)
 script = ExtResource("1_sflvu")
+canvas_size = Vector2i(120, 200)
 tree_preset = 4
+preview_scale = 1.15
 seed = 31415
-canvas_size = Vector2i(96, 128)
-preview_scale = 3.0
 
-[node name="Logo" type="Sprite2D" parent="."]
-position = Vector2(1216, 80)
-scale = Vector2(0.15, 0.15)
+[node name="ForegroundSilhouetteLeft" type="Polygon2D" parent="." unique_id=1940210192]
+color = Color(0.0784314, 0.105882, 0.0862745, 0.72)
+polygon = PackedVector2Array(0, 720, 0, 508, 40, 466, 56, 390, 74, 438, 102, 402, 94, 484, 136, 446, 132, 552, 162, 502, 190, 720)
+
+[node name="ForegroundSilhouetteRight" type="Polygon2D" parent="." unique_id=316173598]
+color = Color(0.0784314, 0.105882, 0.0862745, 0.68)
+polygon = PackedVector2Array(1128, 720, 1146, 624, 1180, 566, 1206, 470, 1228, 530, 1242, 430, 1260, 486, 1280, 450, 1280, 720)
+
+[node name="Logo" type="Sprite2D" parent="." unique_id=108601826]
+modulate = Color(0.956863, 0.929412, 0.843137, 0.72)
+position = Vector2(1190, 74)
+scale = Vector2(0.12, 0.12)
 texture = ExtResource("2_t0oai")
