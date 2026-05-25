@@ -1,0 +1,26 @@
+addons/pixel_tree/pixel_tree_node.gd
+  s_ea51af214f0688::t_aec9cb46d7d2ab 252-255
+  s_ea51af214f0688::t_a7ca2bd243cb59 25-45,50,72-223
+  s_ea51af214f0688::t_b70746621240a8 16-18,272,282,419-424,451
+  s_ea51af214f0688::t_db2dd71e6d2f8a 427-446
+  s_ea51af214f0688::t_f612e0ed51ddb9 283,290,319-320,326-330,334,336,350-351,354,360,362,364,368,370,378-379,383-388
+README.md
+  s_ea51af214f0688::t_6d384a4461c4ce 7,31-36
+  s_ea51af214f0688::t_a50862a8a71e96 13,19,28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "d4cb47152082fd0569eff5866fceea0c091dbbc4",
+  "prompts": {},
+  "sessions": {
+    "s_ea51af214f0688": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019e5ca8-327e-7602-bf05-7f02bca0ae3f",
+        "model": "gpt-5.4"
+      },
+      "human_author": "PosiNorth <nofacer@outlook.com>"
+    }
+  }
+}
